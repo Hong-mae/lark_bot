@@ -1,30 +1,31 @@
 {
-  "name": "lark_bot",
-  "version": "0.0.1",
-  "description": "Discord LostArk Rade Manager Bot with discord.js",
-  "main": "app.js",
-  "scripts": {
-    "start": "node app.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Moong-bee/lark_bot.git"
-  },
-  "author": "Moong-bee",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Moong-bee/lark_bot/issue"
-  },
-  "homepage": "https://github.com/Moong-bee/lark_bot.git#Readme",
-  "dependencies": {
-    "discord.js": "^12.5.3",
-    "moment-timezone": "^0.5.32",
-    "mongoose": "^5.10.15",
-    "nanoid": "^3.1.23",
-    "node-schedule": "^1.3.2",
-    "topgg-autoposter": "^2.0.0"
-  },
-  "devDependencies": {
-    "dotenv": "^10.0.0"
-  }
+	"name": "lark_bot",
+	"version": "0.0.1",
+	"description": "Discord LostArk Rade Manager Bot with discord.js",
+	"main": "app.js",
+	"scripts": {
+		"start": "node app.js",
+		"test": "nodemon --watch app.js"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Moong-bee/lark_bot.git"
+	},
+	"author": "Moong-bee",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/Moong-bee/lark_bot/issue"
+	},
+	"homepage": "https://github.com/Moong-bee/lark_bot.git#Readme",
+	"dependencies": {
+		"discord.js": "^12.5.3",
+		"moment-timezone": "^0.5.32",
+		"mongoose": "^5.10.15",
+		"nanoid": "^3.1.23",
+		"node-schedule": "^1.3.2",
+		"topgg-autoposter": "^2.0.0"
+	},
+	"devDependencies": {
+		"dotenv": "^10.0.0"
+	}
 }
