@@ -1,0 +1,3 @@
+{
+	"watch": ["commands/", "events/", "app.js"]
+}
