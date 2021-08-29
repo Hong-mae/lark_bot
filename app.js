@@ -60,6 +60,24 @@ const fs = require('fs')
 const Discord = require('discord.js')
 const { prefix, token } = require('./config.json')
 
+const mongoose = require('mongoose')
+const dbUrl = 'mongodb://larkBot:test1234@localhost:27017/lark?authSource=admin'
+
+mongoose.connect(dbUrl, {
+	useUnifiedTopology: true,
+	useNewUrlParser: true,
+})
+
+const db = mongoose.connection
+
+db.on('error', (error) => {
+	console.error(error)
+})
+
+db.once('open', () => {
+	console.log('Connected to MongoDB Server')
+})
+
 const client = new Discord.Client()
 client.commands = new Discord.Collection()
 client.cooldowns = new Discord.Collection()

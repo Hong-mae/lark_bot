@@ -5,7 +5,7 @@ module.exports = {
 	name: '쿠크세이튼',
 	description: '쿠크세이튼 레이드 신청하기!',
 	args: true,
-	aliases: ['쿠크세이튼', '쿠크'],
+	aliases: ['쿠크'],
 	usage: '[난이도] [날짜] [시간]',
 	lod: '리허설,노말,하드,헬',
 	execute: (message, args) => {

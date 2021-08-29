@@ -5,7 +5,7 @@ module.exports = {
 	name: '아브렐슈드',
 	description: '아브렐슈드 레이드 신청하기!',
 	args: true,
-	aliases: ['아브렐슈드', '아브'],
+	aliases: ['아브'],
 	usage: '[난이도] [날짜] [시간]',
 	lod: '데자뷰,노말,하드,헬',
 	execute: (message, args) => {

@@ -5,7 +5,7 @@ module.exports = {
 	name: '비아키스',
 	description: '비아키스 레이드 신청하기!',
 	args: true,
-	aliases: ['비아키스', '비아'],
+	aliases: ['비아'],
 	usage: '[난이도] [날짜] [시간]',
 	lod: '노말,하드,헬',
 	execute: (message, args) => {

@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const { prefix } = require('../../config.json')
+const config = require('../../config.json')
 
 module.exports = {
 	name: 'help',
@@ -7,90 +8,87 @@ module.exports = {
 	aliases: ['commands'],
 	usage: '[command name]',
 	cooldown: 5,
-	execute: (message, args) => {
-		const data = new Discord.MessageEmbed()
+	execute: (message, args, client) => {
 		const { commands } = message.client
-
-		data.setColor('#0099ff')
-		data.setAuthor(
-			'우뇽봇',
-			'https://cdn.discordapp.com/avatars/874633918530347028/f52d34330231a75b31f9d9b32a633a9c.png'
-		)
+		let data = []
 
 		if (!args.length) {
-			data.setTitle('우뇽봇 명령어다뇽! v1.0')
-			data.addFields(
-				{
-					name: '명령어 목록',
-					value: commands.map((command) => command.name).join(', '),
-				},
-				{ name: '\u200B', value: '\u200B' }
-			)
-			data.setFooter('자세한 정보는 !help [명령어]로 확인해라뇽!')
 			// data.push("Here's a list of all my commands:")
 			// data.push(commands.map((command) => command.name).join(', '))
 			// data.push(
 			// 	`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`
 			// )
+			data.push('**우뇽봇이 알고있는 명령어!**')
+			data.push('┃')
+			data.push('┝━** 1️⃣ 레이드 관련 명령어 목록 보기 **')
+			data.push('┃	 ┣ !help 레이드, !help raid')
+			data.push('┃	 ┗ 🍎 클릭')
+			data.push('┃')
+			data.push('┗━** 2️⃣ 관리자용 명령어 목록 보기 **')
+			data.push('		 ┣ !help 레이드, !help raid')
+			data.push('		 ┗ 🍏 클릭')
+			data.push(' ')
+			data.push('*추후 더 많은 명령어 추가 예정*')
 
-			// return message.author
-			// 	.send(data, { split: true })
-			// 	.then(() => {
-			// 		if (message.channel.type === 'dm') return
-			// 		message.reply("I've sent you a DM with all my commands!")
-			// 	})
-			// 	.catch((error) => {
-			// 		console.error(
-			// 			`Could not send help DM to ${message.author.tag}.\n`,
-			// 			error
-			// 		)
-			// 		message.reply(
-			// 			"it seems like I can't DM you! Do you have DMs disabled?"
-			// 		)
-			// 	})
+			return message.channel.send(data).then(async (m) => {
+				m.react('🍎')
+				m.react('🍏')
+			})
+		}
+
+		const name = args[0].toLowerCase()
+
+		if (name === '레이드' || name === 'raid') {
+			data.push('**레이드 관련 명령어**')
+			data.push('┃')
+			data.push('┣━** 1️⃣ 레이드 생성 **')
+			data.push('┃	 ┗ ![보스명] [난이도] [날짜] [시간]')
+			data.push('┃')
+			data.push('┣━** 2️⃣ 레이드 참여 **')
+			data.push('┃	 ┗ !참여 [레이드 ID]')
+			data.push('┃')
+			data.push('┣━** 3️⃣ 레이드 나가기 **')
+			data.push('┃	 ┗ !나가기 [레이드 ID]')
+			data.push('┃')
+			data.push('┗━** 4️⃣ 레이드 목록 **')
+			data.push('		 ┗ !목록 [보스명]')
 
 			return message.channel.send(data)
 		}
 
-		const name = args[0].toLowerCase()
-		const command =
-			commands.get(name) ||
-			commands.find((c) => c.aliases && c.aliases.includes(name))
+		if (name === '관리자' || name === 'admin') {
+			const authorPerms = message.channel.permissionsFor(message.author)
+			if (!authorPerms || !authorPerms.has('ADMINISTRATOR')) {
+				return message.reply('넌! 사용못한다뇽!!')
+			}
 
-		if (!command) {
-			return message.reply(`\`${name}\`(은)는 없는 명령어다뇽 ㅠㅡㅠ`)
+			data.push('**관리자용 명령어**')
+			data.push('┃')
+			data.push('┗━** 1️⃣ 유저 추방 **')
+			data.push('		 ┗ !kick [유저맨션]')
+			data.push(' ')
+			data.push('*추후 더 많은 명령어 추가 예정*')
+
+			return message.channel.send(data)
 		}
 
-		data.setTitle(`\`${name}\`의 명령어 사용법이다뇽!`)
-		data.addFields(
-			{ name: 'Desc.', value: command.description },
-			{
-				name: '유사 명령어',
-				value: command.aliases.join(', '),
-				inline: true,
-			},
-			{
-				name: '난이도',
-				value: command.lod,
-				inline: true,
-			},
-			{
-				name: '사용법',
-				value: `${prefix}(${command.aliases.join(', ')}) ${
-					command.usage
-				}`,
-			}
-		)
+		// const command =
+		// 	commands.get(name) ||
+		// 	commands.find((c) => c.aliases && c.aliases.includes(name))
+
+		// if (!command) {
+		// 	return message.reply(`\`${name}\`(은)는 없는 명령어다뇽 ㅠㅡㅠ`)
+		// }
+
 		// data.push(`**명령어:** ${command.name}`)
 
-		// if (command.aliases)
+		// if (command.aliases.length > 0)
 		// 	data.push(`**유사 명령어:** ${command.aliases.join(', ')}`)
 		// if (command.description) data.push(`**정의:** ${command.description}`)
 		// if (command.usage)
 		// 	data.push(`**사용법:** ${prefix}${command.name} ${command.usage}`)
 
 		// data.push(`**쿨타임:** ${command.cooldown || 3} second(s)`)
-
-		message.channel.send(data)
+		// message.channel.send(data)
 	},
 }
