@@ -25,12 +25,9 @@ const raid_schema = new mongoose.Schema({
 		type: String,
 		required: true,
 	},
-	party1: {
+	member: {
 		type: [String],
 		required: true,
-	},
-	party2: {
-		type: [String],
 	},
 	date: {
 		type: Date,

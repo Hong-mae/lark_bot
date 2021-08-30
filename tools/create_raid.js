@@ -59,7 +59,7 @@ module.exports = async (gId, leader, type, boss, level, date) => {
 		raid_model.level = level // 난이도
 
 		raid_model.leader = leader // 공대장
-		raid_model.party1 = [leader] // 1파티 첫번째는 공대장
+		raid_model.member = [leader] // 1파티 첫번째는 공대장
 		raid_model.date = date // 레이드 날짜
 
 		raid_model.detail = getDescripton(boss, level)
