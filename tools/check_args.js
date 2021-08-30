@@ -1,5 +1,6 @@
 const dayjs = require('dayjs')
-require('dayjs/locale/ko')
+dayjs.locale('ko')
+const check_time = require('./check_time')
 
 module.exports = async (args, boss) => {
 	// 난이도 관련
@@ -9,31 +10,36 @@ module.exports = async (args, boss) => {
 		case '헬':
 		case '리허설':
 		case '데자뷰':
+			// const no_rehearsal = new RegExp('(발탄|비아키스)')
+			// if (no_rehearsal.test(boss)) {
+			// 	throw 'wrongLevel'
+			// }
 			break
 		default:
 			throw 'wrongLevel'
 	}
 
-	const no_rehearsal = new RegExp('(발탄|비아키스)')
-	if (no_rehearsal.test(boss)) {
+	if (
+		['발탄', '비아키스'].includes(boss) &&
+		['리허설', '데자뷰'].includes(args[0])
+	) {
 		throw 'wrongLevel'
 	}
+
+	if (boss === '쿠크세이튼' && args[0] === '데자뷰') throw 'wrongLevel'
+	if (boss === '비아키스' && args[0] === '리허설') throw 'wrongLevel'
 	/////////////
 
 	// 날짜 관련
-	if (!args[1]) throw 'needDate'
+	let _date = args.filter((e, i) => {
+		if (i === 0) return
+		return e
+	})
 
-	var dateRegexp = new RegExp('[0-9]{4}-[0-9]{2}-[0-9]{2}')
-	var now = dayjs().format('YYYY-MM-DD')
-	var target = dayjs(args[1]).format('YYYY-MM-DD')
-	if (!dateRegexp.test(args[1])) throw 'wrongDate'
-	else if (now > target) throw `tooSmallDate`
-	///////////
+	const date = check_time(_date.join(' '))
 
-	// 시간 관련
-	if (!args[2]) throw 'needTime'
-
-	var timeRegexp = new RegExp('([1-9]|[01][0-9]|2[0-3]):([0-5][0-9])')
-	if (!timeRegexp.test(args[2])) throw 'wrongTime'
-	///////////
+	return {
+		level: args[0],
+		date: date,
+	}
 }
