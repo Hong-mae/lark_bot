@@ -23,11 +23,12 @@ module.exports = {
 				8,
 				'발탄',
 				level,
-				date.format()
+				date
 			)
 
 			const embed = await create_embed(client, raid_info, 1)
 			let msg = await message.channel.send(embed)
+			await msg.react('🤚')
 		} catch (e) {
 			// console.log(error_handler(e))
 			console.log(e)
