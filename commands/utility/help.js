@@ -3,28 +3,22 @@ const { prefix } = require('../../config.json')
 const config = require('../../config.json')
 
 module.exports = {
-	name: 'help',
-	description: 'List All of my commands or info about a specific command.',
-	aliases: ['commands'],
+	name: '명령어',
+	description: '사용법을 알려드림!',
+	aliases: ['도움말', 'help'],
 	usage: '[command name]',
 	cooldown: 5,
 	execute: (message, args, client) => {
-		const { commands } = message.client
 		let data = []
 
 		if (!args.length) {
-			// data.push("Here's a list of all my commands:")
-			// data.push(commands.map((command) => command.name).join(', '))
-			// data.push(
-			// 	`\nYou can send \`${prefix}help [command name]\` to get info on a specific command!`
-			// )
 			data.push('**우뇽봇이 알고있는 명령어!**')
 			data.push('┃')
 			data.push('┝━** 1️⃣ 레이드 관련 명령어 목록 보기 **')
-			data.push('┃	 ┗ !help 레이드, !help raid')
+			data.push('┃	 ┗ !(명령어, 도움말, help) 레이드, !help raid')
 			data.push('┃')
 			data.push('┗━** 2️⃣ 관리자용 명령어 목록 보기 **')
-			data.push('		 ┗ !help 관리자, !help admin')
+			data.push('		 ┗ !(명령어, 도움말, help) 관리자, !help admin')
 			data.push(' ')
 			data.push('*추후 더 많은 명령어 추가 예정*')
 
@@ -38,7 +32,7 @@ module.exports = {
 			data.push('┃')
 			data.push('┣━** 1️⃣ 레이드 생성 **')
 			data.push(
-				'┃	 ┗ ![보스명] [난이도] [일정(MM월 DD일 오전(오후) HH시 mm분)]'
+				'┃	 ┗ ![보스명] [난이도] **{일정(MM월 DD일 오전(오후) HH시 mm분)}**'
 			)
 			data.push('┃	 ┗ ex) !발탄 노말 8월 20일 오후 6시 00분')
 			data.push('┃	 ┗ ** ‼️ 레이드 생성시 주의 사항 ‼️ **')
@@ -53,6 +47,9 @@ module.exports = {
 			data.push(
 				'┃		 ┗ ** 시간의 경우 24시 표기법 가능 ** - 오후 10시 = 22시'
 			)
+			data.push(
+				'┃		 ┗ ** 모든 일정은 현재 시간보다 이전으로 설정 할 수 없음. **'
+			)
 			data.push('┃')
 			data.push('┣━** 2️⃣ 레이드 참여 **')
 			data.push('┃	 ┗ !참여 [레이드 ID]')
@@ -60,8 +57,10 @@ module.exports = {
 			data.push('┣━** 3️⃣ 레이드 나가기 **')
 			data.push('┃	 ┗ !나가기 [레이드 ID]')
 			data.push('┃')
-			data.push('┗━** 4️⃣ 레이드 목록 **')
-			data.push('		 ┗ !목록 [보스명]')
+			data.push('┣━** 4️⃣ 레이드 목록 **')
+			data.push('┃	 ┗ !목록 **{보스명}**')
+			data.push('┃')
+			data.push('┗━** 대괄호 [] 는 필수, 중괄호 {} 는 생략 가능 **')
 
 			return message.channel.send(data)
 		}
@@ -69,7 +68,7 @@ module.exports = {
 		if (name === '관리자' || name === 'admin') {
 			const authorPerms = message.channel.permissionsFor(message.author)
 			if (!authorPerms || !authorPerms.has('ADMINISTRATOR')) {
-				return message.reply('넌! 사용못한다뇽!!')
+				return message.reply('넌! 사용못한다!! 안돼. 안바꿔줘')
 			}
 
 			data.push('**관리자용 명령어**')
