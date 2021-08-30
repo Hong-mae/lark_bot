@@ -5,6 +5,10 @@ const raid_schema = new mongoose.Schema({
 		type: [String],
 		required: true,
 	},
+	status: {
+		type: String,
+		required: true,
+	},
 	raidId: {
 		type: Number,
 		required: true,
