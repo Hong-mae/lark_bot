@@ -35,7 +35,6 @@ module.exports = {
 			)
 			await msg.react('🤚')
 		} catch (e) {
-			console.log(e)
 			return message.reply(await error_handler(e))
 		}
 	},

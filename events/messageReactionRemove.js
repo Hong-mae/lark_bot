@@ -40,7 +40,6 @@ module.exports = {
 					await update_msg(client, raid_remove_member, 3, user.id)
 				}
 			} catch (e) {
-				console.log(e)
 				let errMsg = await error_handler(e)
 				return reaction.message.channel.send(errMsg)
 			}

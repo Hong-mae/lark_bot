@@ -1,15 +1,10 @@
 const dayjs = require('dayjs')
-var utc = require('dayjs/plugin/utc')
-var timezone = require('dayjs/plugin/timezone')
 
 const { customAlphabet } = require('nanoid')
 const raid_schema = require('../schema/raid')
 const raid = require('../schema/raid')
 
 const nanoid = customAlphabet('123456789', 6)
-dayjs.extend(utc)
-dayjs.extend(timezone)
-dayjs.locale('ko')
 
 const getDescripton = (boss, level) => {
 	switch (boss) {

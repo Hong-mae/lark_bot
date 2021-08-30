@@ -1,12 +1,6 @@
 const Discord = require('discord.js')
 const dayjs = require('dayjs')
 const randColor = require('../tools/rand_color')
-var utc = require('dayjs/plugin/utc')
-var timezone = require('dayjs/plugin/timezone')
-
-dayjs.extend(utc)
-dayjs.extend(timezone)
-dayjs.locale('ko')
 
 const getDetail = (type, member, boss, level) => {
 	switch (type) {

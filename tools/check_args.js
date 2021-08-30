@@ -1,5 +1,4 @@
 const dayjs = require('dayjs')
-dayjs.locale('ko')
 const check_time = require('./check_time')
 
 module.exports = async (args, boss) => {
