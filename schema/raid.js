@@ -32,7 +32,7 @@ const raid_schema = new mongoose.Schema({
 	party2: {
 		type: [String],
 	},
-	time: {
+	date: {
 		type: Date,
 		required: true,
 	},
