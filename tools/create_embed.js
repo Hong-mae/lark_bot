@@ -13,9 +13,10 @@ const getDetail = (type, member, boss, level) => {
 	}
 }
 
-module.exports = async (client, raid, type, _member = null) => {
+module.exports = async (client, raid, type, _member = null, simple = false) => {
 	try {
 		const {
+			status,
 			leader,
 			boss,
 			level,
@@ -33,13 +34,16 @@ module.exports = async (client, raid, type, _member = null) => {
 		members = member.map((e) => `<@${e}>`).join(', ')
 
 		embed.setColor(randColor())
-		embed.setAuthor('우뇽이의 레이드 정보')
-		embed.setThumbnail(
-			'https://item.kakaocdn.net/do/a0d6924a4d1018ef019dbe907b0691718f324a0b9c48f77dbce3a43bd11ce785'
-		)
-
 		embed.setTitle(`${boss} - ${level} 레이드 모집중`)
-		embed.setDescription(detail)
+
+		if (!simple) {
+			embed.setDescription(detail)
+			embed.setAuthor('우뇽이의 레이드 정보')
+			embed.setImage(
+				'https://item.kakaocdn.net/do/a0d6924a4d1018ef019dbe907b0691718f324a0b9c48f77dbce3a43bd11ce785'
+			)
+		}
+
 		embed
 			.addField(
 				'시작 시각',
@@ -48,7 +52,8 @@ module.exports = async (client, raid, type, _member = null) => {
 			)
 			.addField('레이드 ID', raidId, true)
 			.addField('공대장', `<@${leader}>`, true)
-			.addField(`참여인원 (${member.length}/${raid_type})`, members, true)
+			.addField('상태', status, true)
+			.addField(`참여인원 (${member.length}/${raid_type})`, members)
 			.setFooter(`참여방법: 🤚를 누르거나 !참여 ${raidId}`)
 			.setTimestamp()
 
