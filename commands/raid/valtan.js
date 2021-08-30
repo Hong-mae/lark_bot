@@ -6,12 +6,10 @@ const insert_msg = require('../../tools/insert_msg')
 
 module.exports = {
 	name: '발탄',
-	description:
-		'발탄 레이드 신청하기! - 난이도만 입력하면 오늘 오후 8시로 고정됩니다.',
+	description: '발탄 레이드 신청하기!',
 	args: true,
 	aliases: [],
-	usage: '[난이도] (MM월 DD일 오전(오후) hh시 mm분)',
-	lod: '노말,하드,헬',
+	usage: '[난이도] [일정(MM월 DD일 오전(오후) hh시 mm분)]',
 	execute: async (message, args, client) => {
 		try {
 			// args 체크
@@ -37,7 +35,6 @@ module.exports = {
 			)
 			await msg.react('🤚')
 		} catch (e) {
-			// console.log(error_handler(e))
 			console.log(e)
 			return message.reply(await error_handler(e))
 		}
