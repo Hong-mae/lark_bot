@@ -24,8 +24,6 @@ module.exports = {
 					raidId: msg_data.raidId,
 				})
 
-				console.log(raid_info.member.includes(user.id))
-
 				if (!raid_info.member.includes(user.id)) {
 					let raid_add_member = await add_member(
 						reaction.message.guild.id,
