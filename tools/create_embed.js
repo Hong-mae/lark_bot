@@ -8,38 +8,35 @@ dayjs.extend(utc)
 dayjs.extend(timezone)
 dayjs.locale('ko')
 
-const getDetail = (type, leader, boss, level) => {
+const getDetail = (type, member, boss, level) => {
 	switch (type) {
 		case 1:
-			return `<@${leader}>님께서 ${boss} - ${level} 레이드를 신청하셨습니다.`
+			return `<@${member}>님께서 ${boss} - ${level} 레이드를 신청하셨습니다.`
+		case 2:
+			return `<@${member}>님께서 레이드에 참여했습니다.`
+		case 3:
+			return `<@${member}>님 께서 레이드에서 나가셨습니다`
 	}
 }
 
-module.exports = async (client, raid, type) => {
+module.exports = async (client, raid, type, _member = null) => {
 	try {
 		const {
 			leader,
 			boss,
 			level,
-			party1: p1,
-			party2: p2,
+			member,
 			date,
 			raidId,
 			type: raid_type,
 			detail,
 		} = raid
 		let embed = new Discord.MessageEmbed()
-		let party1 = '\u200B',
-			party2 = '\u200B'
+		let members = '\u200B'
 
-		const changes = await getDetail(type, leader, boss, level)
+		const changes = await getDetail(type, _member ?? leader, boss, level)
 
-		await p1.map((e) => {
-			party1 += `<@${e}>`
-		})
-		await p2.map((e) => {
-			party2 += `<@${e}>`
-		})
+		members = member.map((e) => `<@${e}>`).join(', ')
 
 		embed.setColor(randColor())
 		embed.setAuthor('우뇽이의 레이드 정보')
@@ -57,8 +54,7 @@ module.exports = async (client, raid, type) => {
 			)
 			.addField('레이드 ID', raidId, true)
 			.addField('공대장', `<@${leader}>`, true)
-			.addField('1파티', party1, true)
-			.addField('2파티', party2, true)
+			.addField(`참여인원 (${member.length}/${raid_type})`, members, true)
 			.setFooter(`참여방법: 🤚를 누르거나 !참여 ${raidId}`)
 			.setTimestamp()
 
