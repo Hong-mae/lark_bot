@@ -30,6 +30,9 @@ module.exports = async (err) => {
 		case 'notMember':
 			errMsg = '레이드에 참여중인 멤버가 아닙니다.'
 			break
+		case 'notExistLevel':
+			errMsg = '존재하지 않는 레이드 레벨입니다.'
+			break
 		default:
 			errMsg = err
 			break

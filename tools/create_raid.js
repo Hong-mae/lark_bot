@@ -30,13 +30,13 @@ const getDescripton = (boss, level) => {
 				return '쿠크세이튼 리허설은 템렙 1380부터 가능합니다.'
 			else if (level === '노말')
 				return '쿠크세이튼 노말은 템렙 1475부터 가능합니다'
-			else return '출시하지 않는 레벨입니다.'
+			else throw 'notExistLevel'
 		case '아브렐슈드':
 			if (level === '데자뷰')
 				return '아브렐슈드 데자뷰는 템렙 1430부터 가능합니다.'
 			else if (level === '노말')
 				return '아브렐슈드 노말 1~2관문 1490, 3~4관문은 1500, 5~6관문은 1520 입니다.'
-			else return '출시하지 않는 레벨입니다.'
+			else throw 'notExistLevel'
 	}
 }
 
