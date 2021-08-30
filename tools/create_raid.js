@@ -47,6 +47,7 @@ module.exports = async (gId, leader, type, boss, level, date) => {
 		}
 
 		raid_model.guildId = [gId]
+		raid_model.status = '모집중'
 		raid_model.raidId = raidId
 
 		raid_model.type = type // 4인, 8인 레이드
