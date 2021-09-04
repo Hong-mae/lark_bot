@@ -14,13 +14,16 @@ module.exports = {
 		if (!args.length) {
 			data.push('**우뇽봇이 알고있는 명령어!**')
 			data.push('┃')
-			data.push('┝━** 1️⃣ 레이드 관련 명령어 목록 보기 **')
-			data.push('┃	 ┗ !(명령어, 도움말, help) 레이드, !help raid')
+			data.push('┣━** :one: 레이드 관련 명령어 목록 보기 **')
+			data.push('┃	 ┗ !(명령어, 도움말, help) 레이드')
 			data.push('┃')
-			data.push('┗━** 2️⃣ 관리자용 명령어 목록 보기 **')
-			data.push('		 ┗ !(명령어, 도움말, help) 관리자, !help admin')
+			data.push('┣━** :two: 캐릭터 정보 보기 **')
+			data.push('┃	 ┗ !(정보, info) [캐릭터명] <기본, 아이템, 스킬>')
+			data.push('┃')
+			data.push('┗━** :tools: 관리자용 명령어 목록 보기 **')
+			data.push('		 ┗ !(명령어, 도움말, help) 관리자')
 			data.push(' ')
-			data.push('*추후 더 많은 명령어 추가 예정*')
+			data.push('*() - 선택, [] - 필수, <> - 생략가능*')
 
 			return message.channel.send(data)
 		}

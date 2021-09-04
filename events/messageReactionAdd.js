@@ -5,6 +5,7 @@ const { add_member } = require('../tools/manage_member')
 const create_embed = require('../tools/create_embed')
 const error_handler = require('../tools/error_handler')
 const update_msg = require('../tools/update_msg')
+const { search_equipment_by_nickname } = require('../tools/crawler')
 
 module.exports = {
 	name: 'messageReactionAdd',
@@ -44,6 +45,16 @@ module.exports = {
 				let errMsg = await error_handler(e)
 				return reaction.message.channel.send(errMsg)
 			}
+		} else if (reaction.emoji.name === '🍎') {
+			let _nick = ''
+			reaction.message.embeds[0].fields.map((e) => {
+				if (e.name === '닉네임') _nick = e.value
+				return
+			})
+
+			const data = await search_equipment_by_nickname(_nick)
+
+			reaction.message.channel.send(data)
 		}
 	},
 }

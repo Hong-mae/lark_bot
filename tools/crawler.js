@@ -6,12 +6,17 @@ const fs = require('fs')
 
 const LOA_URL = 'https://m-lostark.game.onstove.com'
 
-const search_profile = async (nickname) => {
-	const data = []
+const pre_builder = async (nickname) => {
 	const PROFILE_URL = `${LOA_URL}/Profile/Character/${encodeURI(nickname)}`
 	const response = await axios.get(PROFILE_URL, {})
 
-	const $ = cheerio.load(response.data)
+	const html_parse = cheerio.load(response.data)
+
+	return { PROFILE_URL, html_parse }
+}
+
+const search_profile = async (nickname) => {
+	const { PROFILE_URL, html_parse: $ } = await pre_builder(nickname)
 
 	const info = new Discord.MessageEmbed()
 
@@ -51,23 +56,125 @@ const search_profile = async (nickname) => {
 			{ name: '영지', value: _wisdom, inline: true },
 			{ name: '전투 Lv', value: _level, inline: true },
 			{ name: '아이템 Lv', value: 'Lv.' + _item_lv, inline: true },
-			{ name: 'PVP', value: _pvp, inline: true }
+			{ name: 'PVP', value: _pvp, inline: true },
+			{ name: '-------', value: '-------' }
 		)
-	data.push(info)
+		.setFooter('아이템 정보: 🍎를 누르거나 !정보 [캐릭터명] 아이템')
+
+	// 각인 정보
+	$('.profile-ability-engrave > ul > li').each((i, e) => {
+		info.addField($(e).find('span').text(), $(e).find('p').text())
+	})
+	///////////
+	return info
 	////////////////////
+}
+
+const search_equipment_by_nickname = async (nickname) => {
+	const { PROFILE_URL, html_parse: $ } = await pre_builder(nickname)
 
 	// 장착 아이템 정보
 	const item = new Discord.MessageEmbed()
 
-	const _head = $('#profile-equipment').length
-	console.log(_head)
+	item.setColor(randColor()).setAuthor(
+		`${nickname}의 장비 정보입니다.`,
+		'',
+		PROFILE_URL
+	)
 
-	fs.writeFileSync('./test.html', response.data)
+	const equip = JSON.parse(
+		$('#profile-ability > script')
+			.html()
+			.replace('$.Profile = ', '')
+			.replace(/\;\s*$/, '')
+	).Equip
 
-	// item.addFields({ name: '머리', value: _head })
+	Object.keys(equip).map((e, i) => {
+		if (i >= 6) return
+		/**
+		 * 1차 분류
+		 * 0 = 무기
+		 * 1 = 머리장식
+		 * 2 = 상의
+		 * 3 = 하의
+		 * 4 = 장갑
+		 * 5 = 견갑
+		 *
+		 * 2차 분류
+		 * 0 = 아이템 명
+		 * 1 = 아이템 기본정보 // 품질, 강화, 템렙
+		 * 8 = 트라이포드 정보
+		 */
 
-	// data.puseh(item)
-	return data
+		const target = equip[e]
+
+		switch (i) {
+			case 0:
+				item.addField(
+					'무기',
+					$(target['Element_000'].value).text().substring(4)
+				)
+				break
+			case 1:
+				item.addField(
+					'머리장식',
+					$(target['Element_000'].value).text().substring(4)
+				)
+				break
+			case 2:
+				item.addField(
+					'상의',
+					$(target['Element_000'].value).text().substring(4)
+				)
+				break
+			case 3:
+				item.addField(
+					'하의',
+					$(target['Element_000'].value).text().substring(4)
+				)
+				break
+			case 4:
+				item.addField(
+					'장갑',
+					$(target['Element_000'].value).text().substring(4)
+				)
+				break
+			case 5:
+				item.addField(
+					'견갑',
+					$(target['Element_000'].value).text().substring(4)
+				)
+				break
+			default:
+				return
+		}
+
+		item.addField(
+			'강화',
+			$(target['Element_000'].value).text().substring(0, 3),
+			true
+		)
+		item.addField('품질', target['Element_001'].value.qualityValue, true)
+		item.addField(
+			'아이템 Lv',
+			$(target['Element_001'].value.leftStr2).text(),
+			true
+		)
+	})
+
+	return item
 }
 
-module.exports = { search_profile }
+const get_engrave = async (nickname) => {
+	const { PROFILE_URL, html_parse: $ } = await pre_builder(nickname)
+
+	$('.profile-ability-engrave > ul > li').each((i, e) => {
+		console.log(i, $(e).find('span').text())
+	})
+}
+
+module.exports = {
+	search_profile,
+	search_equipment_by_nickname,
+	get_engrave,
+}
