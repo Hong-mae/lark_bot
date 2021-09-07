@@ -1,7 +1,7 @@
 const {
 	search_profile,
 	search_equipment_by_nickname,
-	get_engrave,
+	search_engrave,
 } = require('../../tools/crawler')
 
 module.exports = {
@@ -20,7 +20,9 @@ module.exports = {
 				message.channel.send(_equip)
 				break
 			case '각인':
-				const _engrave = await get_engrave(args[0])
+				const _engrave = await search_engrave(args[0])
+
+				message.channel.send(_engrave)
 				break
 			case '기본':
 			default:
@@ -28,6 +30,7 @@ module.exports = {
 
 				const msg = await message.channel.send(_default)
 				await msg.react('🍎') // 아이템 정보 보기용
+				await msg.react('🍏')
 				break
 		}
 	},

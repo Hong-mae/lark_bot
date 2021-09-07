@@ -56,16 +56,12 @@ const search_profile = async (nickname) => {
 			{ name: '영지', value: _wisdom, inline: true },
 			{ name: '전투 Lv', value: _level, inline: true },
 			{ name: '아이템 Lv', value: 'Lv.' + _item_lv, inline: true },
-			{ name: 'PVP', value: _pvp, inline: true },
-			{ name: '-------', value: '-------' }
+			{ name: 'PVP', value: _pvp, inline: true }
 		)
-		.setFooter('아이템 정보: 🍎를 누르거나 !정보 [캐릭터명] 아이템')
+		.setFooter(
+			'아이템 정보: 🍎를 누르거나 !정보 [캐릭터명] 장비\n각인 정보: 🍏를 누르거나 !정보 [캐릭터명] 각인'
+		)
 
-	// 각인 정보
-	$('.profile-ability-engrave > ul > li').each((i, e) => {
-		info.addField($(e).find('span').text(), $(e).find('p').text())
-	})
-	///////////
 	return info
 	////////////////////
 }
@@ -108,73 +104,100 @@ const search_equipment_by_nickname = async (nickname) => {
 
 		const target = equip[e]
 
+		item.addField(
+			'강화',
+			$(target['Element_000'].value)
+				.text()
+				.match(/\+[0-9]{2}/) ?? '',
+			true
+		)
+
 		switch (i) {
 			case 0:
 				item.addField(
 					'무기',
-					$(target['Element_000'].value).text().substring(4)
+					$(target['Element_000'].value).text().substring(4),
+					true
 				)
 				break
 			case 1:
 				item.addField(
 					'머리장식',
-					$(target['Element_000'].value).text().substring(4)
+					$(target['Element_000'].value).text().substring(4),
+					true
 				)
 				break
 			case 2:
 				item.addField(
 					'상의',
-					$(target['Element_000'].value).text().substring(4)
+					$(target['Element_000'].value).text().substring(4),
+					true
 				)
 				break
 			case 3:
 				item.addField(
 					'하의',
-					$(target['Element_000'].value).text().substring(4)
+					$(target['Element_000'].value).text().substring(4),
+					true
 				)
 				break
 			case 4:
 				item.addField(
 					'장갑',
-					$(target['Element_000'].value).text().substring(4)
+					$(target['Element_000'].value).text().substring(4),
+					true
 				)
 				break
 			case 5:
 				item.addField(
 					'견갑',
-					$(target['Element_000'].value).text().substring(4)
+					$(target['Element_000'].value).text().substring(4),
+					true
 				)
 				break
 			default:
 				return
 		}
 
-		item.addField(
-			'강화',
-			$(target['Element_000'].value).text().substring(0, 3),
-			true
-		)
-		item.addField('품질', target['Element_001'].value.qualityValue, true)
-		item.addField(
-			'아이템 Lv',
-			$(target['Element_001'].value.leftStr2).text(),
-			true
-		)
+		let qualityValue = parseInt(target['Element_001'].value.qualityValue)
+
+		if (qualityValue <= 10) {
+			qualityValue += ' :red_square:'
+		} else if (qualityValue <= 30) {
+			qualityValue += ' :yellow_square:'
+		} else if (qualityValue <= 70) {
+			qualityValue += ' :green_square:'
+		} else if (qualityValue <= 90) {
+			qualityValue += ' :blue_square:'
+		} else {
+			qualityValue += ' :purple_square:'
+		}
+		item.addField('품질', qualityValue, true)
 	})
 
 	return item
 }
 
-const get_engrave = async (nickname) => {
+const search_engrave = async (nickname) => {
 	const { PROFILE_URL, html_parse: $ } = await pre_builder(nickname)
 
+	const engrave = new Discord.MessageEmbed()
+
+	engrave
+		.setColor(randColor())
+		.setAuthor(`${nickname}의 각인 정보입니다.`, '', PROFILE_URL)
+
+	// 각인 정보
 	$('.profile-ability-engrave > ul > li').each((i, e) => {
-		console.log(i, $(e).find('span').text())
+		engrave.addField($(e).find('span').text(), $(e).find('p').text())
 	})
+	///////////
+
+	return engrave
 }
 
 module.exports = {
 	search_profile,
 	search_equipment_by_nickname,
-	get_engrave,
+	search_engrave,
 }
