@@ -66,14 +66,28 @@ const search_profile = async (nickname) => {
 	////////////////////
 }
 
-const search_equipment_by_nickname = async (nickname) => {
+const search_equipment_by_nickname = async (nickname, type = 'default') => {
 	const { PROFILE_URL, html_parse: $ } = await pre_builder(nickname)
 
 	// 장착 아이템 정보
+
+	/**
+	 * 1차 분류
+	 * 0 = 무기, 1 = 머리장식, 2 = 상의
+	 * 3 = 하의, 4 = 장갑, 5 = 견갑
+	 * 6 = 목걸이, 7 = 귀걸이, 8 = 귀걸이
+	 * 9 = 반지, 10 = 반지, 11 = 어빌리티 스톤
+	 *
+	 * 2차 분류
+	 * 0 = 아이템 명
+	 * 1 = 아이템 기본정보 // 품질, 강화, 템렙
+	 * 8 = 트라이포드 정보
+	 */
+
 	const item = new Discord.MessageEmbed()
 
 	item.setColor(randColor()).setAuthor(
-		`${nickname}의 장비 정보입니다.`,
+		`${nickname}의 ${type === 'default' ? '장비' : '악세서리'} 정보입니다.`,
 		'',
 		PROFILE_URL
 	)
@@ -85,95 +99,97 @@ const search_equipment_by_nickname = async (nickname) => {
 			.replace(/\;\s*$/, '')
 	).Equip
 
-	Object.keys(equip).map((e, i) => {
-		if (i >= 6) return
-		/**
-		 * 1차 분류
-		 * 0 = 무기
-		 * 1 = 머리장식
-		 * 2 = 상의
-		 * 3 = 하의
-		 * 4 = 장갑
-		 * 5 = 견갑
-		 *
-		 * 2차 분류
-		 * 0 = 아이템 명
-		 * 1 = 아이템 기본정보 // 품질, 강화, 템렙
-		 * 8 = 트라이포드 정보
-		 */
+	if (type === 'default') {
+		Object.keys(equip).map((e, i) => {
+			if (i >= 6) return
 
-		const target = equip[e]
+			const target = equip[e]
 
-		item.addField(
-			'강화',
-			$(target['Element_000'].value)
+			item.addField(
+				'강화',
+				$(target['Element_000'].value)
+					.text()
+					.match(/\+[0-9]{2}/) ?? '-',
+				true
+			)
+
+			const equip_type = $(target['Element_001'].value.leftStr0).text()
+			const equip_name = $(target['Element_000'].value)
 				.text()
-				.match(/\+[0-9]{2}/) ?? '',
-			true
-		)
+				.substring(4)
+			item.addField(equip_type, equip_name, true)
 
-		switch (i) {
-			case 0:
-				item.addField(
-					'무기',
-					$(target['Element_000'].value).text().substring(4),
-					true
-				)
-				break
-			case 1:
-				item.addField(
-					'머리장식',
-					$(target['Element_000'].value).text().substring(4),
-					true
-				)
-				break
-			case 2:
-				item.addField(
-					'상의',
-					$(target['Element_000'].value).text().substring(4),
-					true
-				)
-				break
-			case 3:
-				item.addField(
-					'하의',
-					$(target['Element_000'].value).text().substring(4),
-					true
-				)
-				break
-			case 4:
-				item.addField(
-					'장갑',
-					$(target['Element_000'].value).text().substring(4),
-					true
-				)
-				break
-			case 5:
-				item.addField(
-					'견갑',
-					$(target['Element_000'].value).text().substring(4),
-					true
-				)
-				break
-			default:
-				return
-		}
+			let qualityValue = parseInt(
+				target['Element_001'].value.qualityValue
+			)
 
-		let qualityValue = parseInt(target['Element_001'].value.qualityValue)
+			if (qualityValue <= 10) {
+				qualityValue += ' :red_square:'
+			} else if (qualityValue <= 30) {
+				qualityValue += ' :yellow_square:'
+			} else if (qualityValue <= 70) {
+				qualityValue += ' :green_square:'
+			} else if (qualityValue <= 90) {
+				qualityValue += ' :blue_square:'
+			} else if (qualityValue <= 99) {
+				qualityValue += ' :purple_square:'
+			} else {
+				qualityValue += ' :orange_square:'
+			}
 
-		if (qualityValue <= 10) {
-			qualityValue += ' :red_square:'
-		} else if (qualityValue <= 30) {
-			qualityValue += ' :yellow_square:'
-		} else if (qualityValue <= 70) {
-			qualityValue += ' :green_square:'
-		} else if (qualityValue <= 90) {
-			qualityValue += ' :blue_square:'
-		} else {
-			qualityValue += ' :purple_square:'
-		}
-		item.addField('품질', qualityValue, true)
-	})
+			item.addField('품질', qualityValue, true)
+		}) // 장비 정보
+	} else if (type === 'accessory') {
+		// 2차분류
+		// 6 = 추가옵션(치특신제인숙) - 어빌리티 스톤의 경우 각인정보
+		// 7 = 각인
+
+		Object.keys(equip).map((e, i) => {
+			if (i <= 5 || i >= 12) return
+
+			const target = equip[e]
+
+			const equip_type = $(target['Element_001'].value.leftStr0).text()
+			const equip_name = $(target['Element_000'].value).text()
+
+			item.addField(equip_type, equip_name, true)
+
+			let qualityValue = parseInt(
+				target['Element_001'].value.qualityValue
+			)
+
+			if (qualityValue <= 10) {
+				qualityValue += ' :red_square:'
+			} else if (qualityValue <= 30) {
+				qualityValue += ' :yellow_square:'
+			} else if (qualityValue <= 70) {
+				qualityValue += ' :green_square:'
+			} else if (qualityValue <= 90) {
+				qualityValue += ' :blue_square:'
+			} else if (qualityValue <= 99) {
+				qualityValue += ' :purple_square:'
+			} else {
+				qualityValue += ' :orange_square:'
+			}
+
+			item.addField('품질', qualityValue, true)
+
+			if (i !== 11) {
+				let additional_option = $(
+					`<p>${target['Element_006'].value.Element_001}</p>`
+				)
+					.text()
+					.match(/[ㄱ-ㅎ|ㅏ-ㅣ|가-힣]{2}\s\+[0-9]{1,3}/g)
+
+				let additional_engrave = $(
+					target['Element_007'].value.Element_001
+				).text()
+
+				item.addField('추가 옵션', additional_option, true)
+				item.addField('추가 각인', additional_engrave)
+			}
+		}) // 악세 정보
+	}
 
 	return item
 }
