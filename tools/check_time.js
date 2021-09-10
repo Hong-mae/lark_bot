@@ -22,8 +22,7 @@ const searchTime = (str) => {
 	if (
 		(pattern && pattern.length >= 1) ||
 		((str.match(regex.am) || str.match(regex.pm)) && str.match(regex.time))
-	) {
-		console.log(pattern)
+	) {\
 		for (var i = 0; i < pattern.length; i++) {
 			if (pattern[i].match(regex.pm)) times += 43200000
 			if (pattern[i].match(regex.hour))

@@ -2,6 +2,7 @@ require('dayjs/locale/ko')
 const fs = require('fs')
 const Discord = require('discord.js')
 const { prefix, token } = require('./config.json')
+const cronjob = require('./cron')
 
 const mongoose = require('mongoose')
 const dbUrl = 'mongodb://larkBot:test1234@localhost:27017/lark?authSource=admin'
@@ -120,5 +121,5 @@ client.on('message', (message) => {
 		message.reply('there was an error trying to execute that command!')
 	}
 })
-
+;(async () => await cronjob())()
 client.login(token)

@@ -31,18 +31,16 @@ module.exports = {
 				break
 		}
 
-		const lists = await raid_schema
-			.find({
-				$or: [{ status: '모집중' }, { status: '모집종료' }],
-				$and: [filter],
-			})
-			.sort({ boss: 1 })
-
-		if (list.length === 0) {
-			return message.channel.send(`**⚠ 모집 중인 레이드가 없습니다**`)
-		}
-
 		try {
+			const lists = await raid_schema
+				.find({
+					$or: [{ status: '모집중' }],
+					$and: [filter],
+				})
+				.sort({ boss: 1 })
+
+			if (lists.length === 0) throw 'notExist'
+
 			for (const list of lists) {
 				let embed = await create_embed(client, list, 0, null, true)
 				let msg = await message.channel.send(embed)

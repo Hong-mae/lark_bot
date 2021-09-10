@@ -41,6 +41,11 @@ const raid_schema = new mongoose.Schema({
 		type: String,
 		default: '세부정보가 없습니다',
 	},
+	expires: {
+		type: Date,
+		index: true,
+		expires: 10,
+	},
 })
 
 module.exports = mongoose.model('raid', raid_schema)
