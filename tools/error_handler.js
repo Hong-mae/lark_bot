@@ -17,6 +17,9 @@ module.exports = async (err) => {
 		case 'notExist':
 			errMsg = `생성된 레이드가 없습니다.`
 			break
+		case 'notLeader':
+			errMsg = `공대장이 아닙니다.`
+			break
 		case 'fullMember':
 			errMsg = '모집 인원이 완료되었습니다.'
 			break
