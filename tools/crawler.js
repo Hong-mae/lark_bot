@@ -10,6 +10,9 @@ const pre_builder = async (nickname) => {
 	const PROFILE_URL = `${LOA_URL}/Profile/Character/${encodeURI(nickname)}`
 	const response = await axios.get(PROFILE_URL, {})
 
+	if (response.data.includes('캐릭터 정보가 없습니다.'))
+		throw 'notExistCharacter'
+
 	const html_parse = cheerio.load(response.data)
 
 	return { PROFILE_URL, html_parse }
@@ -212,8 +215,40 @@ const search_engrave = async (nickname) => {
 	return engrave
 }
 
+const search_skill = async (nickname) => {
+	const { PROFILE_URL, html_parse: $ } = await pre_builder(nickname)
+
+	const skill = new Discord.MessageEmbed()
+
+	skill
+		.setColor(randColor())
+		.setAuthor(`${nickname}의 각인 정보입니다.`, '', PROFILE_URL)
+
+	$('.profile-skill__item').each((i, e) => {
+		const name = $(e).find('.profile-skill__title').text()
+		const lv = $(e).find('.profile-skill__lv > em').text()
+		const tripod = []
+		$(e)
+			.find('.profile-skill__status > span')
+			.each((i, e) => {
+				tripod.push($(e).text().trim())
+			})
+
+		if (parseInt(lv) > 1) {
+			skill.addFields(
+				{ name: '스킬명', value: name, inline: true },
+				{ name: '레벨', value: lv, inline: true },
+				{ name: '트포', value: [...tripod, '\u200B'], inline: true }
+			)
+		}
+	})
+
+	return skill
+}
+
 module.exports = {
 	search_profile,
 	search_equipment_by_nickname,
 	search_engrave,
+	search_skill,
 }

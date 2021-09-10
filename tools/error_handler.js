@@ -33,6 +33,12 @@ module.exports = async (err) => {
 		case 'notExistLevel':
 			errMsg = '존재하지 않는 레이드 레벨입니다.'
 			break
+		case 'pageError':
+			errMsg = '페이지를 찾을 수 없거나 점검 중 입니다.'
+			break
+		case 'notExistCharacter':
+			errMsg = '캐릭터를 찾을 수 없습니다.'
+			break
 		default:
 			errMsg = err
 			break
